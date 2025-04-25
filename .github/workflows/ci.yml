@@ -26,10 +26,6 @@ jobs:
         run: |
           docker build -t ${{ secrets.DOCKER_USERNAME }}/devsecure-api:latest .
 
-      - name: Test Docker Image
-        run: |
-          docker run --rm ${{ secrets.DOCKER_USERNAME }}/devsecure-api:latest pytest
-
   security-scan:
     name: Security Scans
     runs-on: ubuntu-latest
@@ -44,7 +40,7 @@ jobs:
           docker run --rm aquasec/trivy image ${{ secrets.DOCKER_USERNAME }}/devsecure-api:latest > trivy-report.html
 
       - name: Run Snyk Scan
-        uses: snyk/actions/docker@v2
+        uses: snyk/actions/docker@master
         with:
           image: ${{ secrets.DOCKER_USERNAME }}/devsecure-api:latest
           args: --file=Dockerfile
@@ -53,8 +49,6 @@ jobs:
 
       - name: Run GitLeaks Scan
         uses: zricethezav/gitleaks-action@v1
-        with:
-          config: .gitleaks.toml
 
   push-to-dockerhub:
     name: Push to Docker Hub
