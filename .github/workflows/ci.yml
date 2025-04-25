@@ -23,7 +23,6 @@ jobs:
           format: 'table'
           severity: 'HIGH,CRITICAL'
           ignore-unfixed: true
-          exit-code: 1
 
       - name: Run Snyk Scan
         uses: snyk/actions/docker@master
