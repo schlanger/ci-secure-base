@@ -21,7 +21,6 @@ jobs:
         with:
           image-ref: devsecure-api:latest
           format: 'table'
-          output: 'trivy-report.json'
           severity: 'HIGH,CRITICAL'
           ignore-unfixed: true
           exit-code: 1
