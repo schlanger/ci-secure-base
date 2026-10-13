@@ -48,11 +48,46 @@ jobs:
         with:
           name: snyk-report
           path: snyk-report.html
-          
+
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      
+       # --- SBOM de l'image Docker (paquets système + dépendances Python) ---
+      - name: SBOM de l'image
+        uses: anchore/sbom-action@v0
+        with:
+          image: devsecure-api:latest
+          format: cyclonedx-json
+          output-file: sbom-image.cdx.json
+          artifact-name: sbom-image.cdx.json
+
+      # --- SBOM du code Python (requirements.txt) ---
+      - name: SBOM de l'application
+        uses: anchore/sbom-action@v0
+        with:
+          path: .
+          format: cyclonedx-json
+          output-file: sbom-app.cdx.json
+          artifact-name: sbom-app.cdx.json
+
+      # --- Scan de vulnérabilités à partir des SBOM ---
+      - name: Scan CVE de l'image
+        uses: anchore/scan-action@v6
+        with:
+          sbom: sbom-image.cdx.json
+          fail-build: false
+          severity-cutoff: high
+          output-format: table
+
+      - name: Scan CVE de l'application Python
+        uses: anchore/scan-action@v6
+        with:
+          sbom: sbom-app.cdx.json
+          fail-build: false
+          severity-cutoff: high
+          output-format: table
 
       - name: Run GitLeaks Scan
         uses: gitleaks/gitleaks-action@v2
