@@ -10,7 +10,7 @@ jobs:
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
 
       - name: Build Docker Image
         run: |
@@ -44,13 +44,13 @@ jobs:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
       - name: Upload Snyk Report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: snyk-report
           path: snyk-report.html
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
       
@@ -74,7 +74,7 @@ jobs:
 
       # --- Scan de vulnérabilités à partir des SBOM ---
       - name: Scan CVE de l'image
-        uses: anchore/scan-action@v6
+        uses: anchore/scan-action@v7
         with:
           sbom: sbom-image.cdx.json
           fail-build: false
@@ -82,7 +82,7 @@ jobs:
           output-format: table
 
       - name: Scan CVE de l'application Python
-        uses: anchore/scan-action@v6
+        uses: anchore/scan-action@v7
         with:
           sbom: sbom-app.cdx.json
           fail-build: false
@@ -90,7 +90,7 @@ jobs:
           output-format: table
 
       - name: Run GitLeaks Scan
-        uses: gitleaks/gitleaks-action@v2
+        uses: gitleaks/gitleaks-action@v3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
@@ -101,7 +101,7 @@ jobs:
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
 
       - name: Build Docker Image
         run: |
